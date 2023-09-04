@@ -1,7 +1,6 @@
 // index.js
 // where your node app starts
 
-// require("dotenv").config()
 //console.log(process.env)
 
 // init project
@@ -27,14 +26,10 @@ app.get("/api/hello", function (req, res) {
 })
 
 app.get("/api/:date?", function (req, res) {
-  console.log(req.params)
-
-  // No  input -> undefined -> now
-  // Yes input -> parse     -> timestamp -> Valid date
-  //                        -> NaN       -> Invalid date
+  const dateParam = req.params.date
 
   // Current time
-  if (req.params.date === undefined) {
+  if (dateParam === undefined) {
     const now = new Date()
     return res.json({
       unix: Number(now),
@@ -42,18 +37,23 @@ app.get("/api/:date?", function (req, res) {
     })
   }
 
-  // Not current time
-  const parseResult = Date.parse(req.params.date)
+  // Provided time
+  let date
+
+  if (dateParam.includes("-")) {
+    date = new Date(dateParam)
+  } else {
+    date = new Date(Number(dateParam))
+  }
 
   // Invalid
-  if (isNaN(parseResult)) {
+  if (date.toString() === "Invalid Date") {
     return res.json({
       error: "Invalid Date",
     })
   }
 
   // Valid
-  const date = new Date(parseResult)
   return res.json({
     unix: Number(date),
     utc: date.toUTCString(),
