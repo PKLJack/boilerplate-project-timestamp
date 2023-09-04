@@ -40,10 +40,10 @@ app.get("/api/:date?", function (req, res) {
   // Provided time
   let date
 
-  if (dateParam.includes("-")) {
-    date = new Date(dateParam)
-  } else {
+  if (/^\d+$/.test(dateParam)) {
     date = new Date(Number(dateParam))
+  } else {
+    date = new Date(dateParam)
   }
 
   // Invalid
